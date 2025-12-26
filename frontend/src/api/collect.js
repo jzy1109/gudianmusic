@@ -1,0 +1,1 @@
+export { getFavorites } from '../api/favorite.js'

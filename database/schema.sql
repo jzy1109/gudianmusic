@@ -1,0 +1,46 @@
+-- 1. 选中数据库
+USE gudianmusic;
+-- 2. 用户表
+CREATE TABLE IF NOT EXISTS users (
+id INT AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(80) UNIQUE NOT NULL,
+password VARCHAR(200) NOT NULL,
+last_login DATETIME DEFAULT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+-- 3. 音乐作品表
+CREATE TABLE IF NOT EXISTS music (
+id INT AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(200) NOT NULL,
+artist VARCHAR(100),
+dynasty VARCHAR(50),
+genre ENUM('guqin','pipa','all') DEFAULT 'all',
+cover VARCHAR(200),
+description TEXT
+);
+-- 4. 弹幕表
+CREATE TABLE IF NOT EXISTS danmus (
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id INT,
+text VARCHAR(100) NOT NULL,
+color VARCHAR(20) DEFAULT '#FFFFFF',
+size INT DEFAULT 14,
+position TINYINT DEFAULT 3,
+speed FLOAT DEFAULT 30.0,
+is_user BOOLEAN DEFAULT FALSE,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+-- 5. 收藏表（必须，否则收藏功能 500）
+CREATE TABLE IF NOT EXISTS user_favorite (
+id INT AUTO_INCREMENT PRIMARY KEY,
+user_id INT NOT NULL,
+type VARCHAR(20) NOT NULL,
+key_name VARCHAR(100) NOT NULL,
+name VARCHAR(200),
+icon VARCHAR(20),
+brief VARCHAR(500),
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+UNIQUE KEY uk_user_type_key (user_id, type, key_name),
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
