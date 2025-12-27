@@ -2,9 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from config import config
+from flask_migrate import Migrate
 
 # 创建数据库对象
 db = SQLAlchemy()
+
+migrate = Migrate()
 
 def create_app(config_name='default'):
     # 1. 创建Flask应用
@@ -15,11 +18,14 @@ def create_app(config_name='default'):
     
     # 3. 初始化数据库
     db.init_app(app)
-    
+
+    # 新增：挂载迁移
+    migrate.init_app(app, db)
+
     # 4. 允许跨域
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     
-    # 5. 导入路由（稍后创建）
+    # 5. 导入路由
     from app.routes import api_bp
     app.register_blueprint(api_bp, url_prefix='/api')
     
